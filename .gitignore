@@ -1,0 +1,56 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# TypeScript
+*.tsbuildinfo
+dist/
+build/
+
+# Logs
+logs
+*.log
+logs/**/*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Environment (NO subir ningún .env)
+.env
+*.env
+.env.*
+!*.env.example   # excepción: mantener solo los de ejemplo
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+docker-compose.override.yml
+.dockerignore
+
+# Database
+db/data/
+db/backups/
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Coverage / tests
+coverage/
+.nyc_output/
+jest-html-reporters-*.html
+
+# Frontend (React/Vue)
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.DS_Store
