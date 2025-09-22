@@ -1,0 +1,24 @@
+# api
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --ignore-scripts
+
+# If using TypeScript:
+# COPY tsconfig.json ./
+# COPY src ./src
+# RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# If TS, copy compiled dist instead:
+# COPY --from=deps /app/dist ./dist
+EXPOSE 3000
+
+# Healthcheck (optional)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s CMD node -e "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+
+CMD ["npm","start"]

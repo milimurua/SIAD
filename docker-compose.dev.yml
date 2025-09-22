@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432" 
+      - "5432:5432"        
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d
@@ -19,14 +19,27 @@ services:
       timeout: 3s
       retries: 15
 
-  adminer:
-    image: adminer:4
-    restart: unless-stopped
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: insurance_api
+    env_file: .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT:-3000}
+      - JWT_SECRET=${JWT_SECRET}
+      - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS:-12}
     ports:
-      - "8080:8080"
+      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
+    command: npm run dev:docker
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+
 
 volumes:
   pgdata:

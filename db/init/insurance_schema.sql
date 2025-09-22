@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS insurance_db.branches (
 -- Productor de seguros 
 CREATE TABLE IF NOT EXISTS insurance_db.safe_producer (
   id_producer UUID PRIMARY KEY DEFAULT gen_random_UUID(),
-  tuition VARCHAR(10) NOT NULL,       
+  tuition VARCHAR(10) NOT NULL,
+  country text NOT NULL,       
   emitter_entity TEXT NOT NULL,            
   name_producer TEXT NOT NULL,
   dni VARCHAR(10) UNIQUE NOT NULL,
@@ -43,33 +44,33 @@ CREATE TABLE IF NOT EXISTS insurance_db.safe_producer (
 
 -- Tabla Asegurados 
 CREATE TABLE IF NOT EXISTS insurance_db.insured (
-  dni              VARCHAR(10) PRIMARY KEY,
-  name_insured     TEXT NOT NULL,
-  surname_insured  TEXT NOT NULL,
-  phone            VARCHAR(25),
-  email            CITEXT,
-  address          TEXT NOT NULL,
-  branch_id        UUID REFERENCES insurance_db.branches(id_branch) ON DELETE SET NULL,
-  insurance_id     UUID REFERENCES insurance_db.insurance(id_insurance) ON DELETE SET NULL,
+  dni VARCHAR(10) PRIMARY KEY,
+  name_insured TEXT NOT NULL,
+  surname_insured TEXT NOT NULL,
+  phone VARCHAR(25),
+  email CITEXT,
+  address TEXT NOT NULL,
+  branch_id UUID REFERENCES insurance_db.branches(id_branch) ON DELETE SET NULL,
+  insurance_id UUID REFERENCES insurance_db.insurance(id_insurance) ON DELETE SET NULL,
   CONSTRAINT email_insured_chk CHECK (email IS NULL OR position('@' in email) > 1)
 );
 
 -- Tabla Siniestros 
 CREATE TABLE IF NOT EXISTS insurance_db.sinister (
-  id_sinister          UUID PRIMARY KEY DEFAULT gen_random_UUID(),
-  insured_dni          VARCHAR(10) REFERENCES insurance_db.insured(dni) ON DELETE SET NULL,
-  insurance_id         UUID REFERENCES insurance_db.insurance(id_insurance) ON DELETE SET NULL,
-  branch_id            UUID REFERENCES insurance_db.branches(id_branch) ON DELETE SET NULL,
-  date_sinister        date NOT NULL,
+  id_sinister UUID PRIMARY KEY DEFAULT gen_random_UUID(),
+  insured_dni VARCHAR(10) REFERENCES insurance_db.insured(dni) ON DELETE SET NULL,
+  insurance_id UUID REFERENCES insurance_db.insurance(id_insurance) ON DELETE SET NULL,
+  branch_id UUID REFERENCES insurance_db.branches(id_branch) ON DELETE SET NULL,
+  date_sinister date NOT NULL,
   description_sinister TEXT NOT NULL,
-  amount_sinister      numeric(12,2) NOT NULL,
-  stay_sinister        boolean NOT NULL DEFAULT false
+  amount_sinister numeric(12,2) NOT NULL,
+  stay_sinister boolean NOT NULL DEFAULT false
 );
 
 -- Índices útiles
 CREATE INDEX IF NOT EXISTS idx_branches_insurance_id ON insurance_db.branches(insurance_id);
-CREATE INDEX IF NOT EXISTS idx_insured_insurance_id  ON insurance_db.insured(insurance_id);
-CREATE INDEX IF NOT EXISTS idx_insured_branch_id     ON insurance_db.insured(branch_id);
-CREATE INDEX IF NOT EXISTS idx_sinister_insured_dni  ON insurance_db.sinister(insured_dni);
+CREATE INDEX IF NOT EXISTS idx_insured_insurance_id ON insurance_db.insured(insurance_id);
+CREATE INDEX IF NOT EXISTS idx_insured_branch_id ON insurance_db.insured(branch_id);
+CREATE INDEX IF NOT EXISTS idx_sinister_insured_dni ON insurance_db.sinister(insured_dni);
 CREATE INDEX IF NOT EXISTS idx_sinister_insurance_id ON insurance_db.sinister(insurance_id);
-CREATE INDEX IF NOT EXISTS idx_sinister_branch_id    ON insurance_db.sinister(branch_id);
+CREATE INDEX IF NOT EXISTS idx_sinister_branch_id ON insurance_db.sinister(branch_id);
