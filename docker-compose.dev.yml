@@ -14,7 +14,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -22,24 +22,24 @@ services:
   api:
     build:
       context: ./api
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     container_name: insurance_api
+    restart: unless-stopped
     env_file: .env
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT:-3000}
+      - PORT=${PORT}
       - JWT_SECRET=${JWT_SECRET}
-      - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS:-12}
+      - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS}
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
-    command: npm run dev:docker
+    command: npm run dev
     volumes:
       - ./api:/app
       - /app/node_modules
-
 
 volumes:
   pgdata:
