@@ -1,2 +1,12 @@
-import { Pool } from 'pg';
+import { Pool } from "pg";
 
+import dotenv from "dotenv";
+dotenv.config();
+
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+pool.query("SELECT 1")
+  .then(() => console.log("Database connected"))
+  .catch((err: unknown) => console.error("DB connection error:", err));
