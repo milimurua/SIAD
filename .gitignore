@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Node.js
 node_modules/
 npm-debug.log*
@@ -86,4 +85,3 @@ coverage
 *.sw?
 
 *.tsbuildinfo
->>>>>>> 7295c68 (Actualiza frontend con página de presentación y registro)
