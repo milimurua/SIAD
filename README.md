@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # vue-project
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -36,3 +37,7 @@ npm run dev
 ```sh
 npm run build
 ```
+=======
+# SIAD
+Es un sistema integral para la gestión de denuncias en el sector asegurador, con base de datos central en PostgreSQL, backend en Node.js, frontend en React, seguridad con JWT y cifrado, soporte de búsquedas rápidas en NoSQL e integración con APIs externas para validación de datos.
+>>>>>>> e65c8b5 (Initial commit)

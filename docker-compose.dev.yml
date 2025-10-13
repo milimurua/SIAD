@@ -41,7 +41,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: npm run dev
+    command: npm run dev:docker
     volumes:
       - ./api:/app
       - /app/node_modules
