@@ -1,5 +1,23 @@
 import { Request, Response } from "express";
+import { AuthService } from "../../application/auth/AuthService";
 
-export const getUsuarios = (_req: Request, res: Response) => {
-  res.json([{ id: 1, nombre: "Usuario de prueba" }]);
+const authService = new AuthService();
+
+export const register = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.register(req.body);
+    res.status(201).json(result);
+  } catch (e: any) {
+    res.status(400).json({ message: e.message });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const result = await authService.login(email, password);
+    res.json(result);
+  } catch (e: any) {
+    res.status(401).json({ message: e.message });
+  }
 };

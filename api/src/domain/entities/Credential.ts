@@ -1,4 +1,4 @@
-export type UserRol = "insurer" | "producer";
+export type UserRol = "Insurance" | "SafeProducer";
 
 export interface Credential {
   id: string;

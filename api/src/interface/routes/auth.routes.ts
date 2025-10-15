@@ -1,6 +1,12 @@
 import { Router } from "express";
-import { getUsuarios } from "../controllers/auth.controller";
+import * as AuthController from "../controllers/auth.controller";
+import { validateRegister } from "../middlewares/validate.middleware";
 
-export const usuariosRouter = Router();
 
-usuariosRouter.get("/", getUsuarios);
+
+const router = Router();
+router.post("/register", AuthController.register);
+router.post("/login", AuthController.login);
+router.post("/register", validateRegister, AuthController.register);
+
+export default router;
