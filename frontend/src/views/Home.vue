@@ -2,14 +2,6 @@
   <div class="home-container">
     <div class="home-content">
       <h1>Bienvenido a <span class="highlight">SIAD</span></h1>
-      <p>
-        Es un sistema integral para la gestión de denuncias en el sector asegurador,
-        con base de datos central en <strong>PostgreSQL</strong>, backend en
-        <strong>Node.js</strong>, frontend en <strong>Vue.js</strong>, seguridad con
-        <strong>JWT</strong> y cifrado, soporte de búsquedas rápidas en
-        <strong>NoSQL</strong> e integración con <strong>APIs externas</strong> para
-        validación de datos.
-      </p>
 
       <div class="buttons">
         <router-link to="/register" class="btn">Registrarse</router-link>
