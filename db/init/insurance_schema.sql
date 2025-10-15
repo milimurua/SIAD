@@ -5,6 +5,14 @@ CREATE EXTENSION IF NOT EXISTS CITEXT;    -- email case-insensitive
 -- Esquema
 CREATE SCHEMA IF NOT EXISTS insurance_db;
 
+CREATE TABLE IF NOT EXISTS insurance_db.credentials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email CITEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  type VARCHAR(20) NOT NULL CHECK (type IN ('insurer' , 'producer')),
+  reference_id UUID NOT NULL
+);
+
 -- Tabla Aseguradora 
 CREATE TABLE IF NOT EXISTS insurance_db.insurance (
   id_insurance UUID PRIMARY KEY DEFAULT gen_random_UUID(),
