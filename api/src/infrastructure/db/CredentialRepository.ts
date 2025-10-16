@@ -10,9 +10,9 @@ export class CredentialRepository implements ICredentialRepository {
 
   async create(cred: Credential): Promise<Credential> {
     const res = await pool.query(
-      `INSERT INTO insurance_db.credentials (email, password, rol, reference_id)
+      `INSERT INTO insurance_db.credentials (email, password, type, reference_id)
        VALUES ($1, $2, $3, $4) RETURNING *`,
-      [cred.email, cred.password, cred.rol, cred.reference_id]
+      [cred.email, cred.password, cred.type, cred.reference_id]
     );
     return res.rows[0];
   }

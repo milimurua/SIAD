@@ -18,9 +18,9 @@ export class AuthService {
         if (existing) throw new Error("Email already registered");
 
         let reference;
-        if (type === "Insurance") {
+        if (type === "insurance") {
             reference = await this.insuranceRepo.create(data);
-        } else if (type === "SafeProducer") {
+        } else if (type === "producer") {
             reference = await this.producerRepo.create(data);
         } else {
             throw new Error("Invalid user type");
@@ -36,12 +36,12 @@ export class AuthService {
             id: "",
             email,
             password: hashed,
-            rol: type,
+            type: type,
             reference_id,
         };
 
         const created = await this.credentialRepo.create(cred);
-        const token = generateToken({ id: created.id, email, type });
+        const token = generateToken({ id: created.id, email, type, reference_id: created.reference_id });
 
         return { token, userType: type, reference };
     }
@@ -54,7 +54,7 @@ export class AuthService {
         const valid = await comparePassword(password, cred.password);
         if (!valid) throw new Error("Invalid credentials");
 
-        const token = generateToken({ id: cred.id, email: cred.email, type: cred.rol });
-        return { token, type: cred.rol };
+        const token = generateToken({ id: cred.id, email: cred.email, type: cred.type, reference_id: cred.reference_id });
+        return { token, type: cred.type };
     }
 }

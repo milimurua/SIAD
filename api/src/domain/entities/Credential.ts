@@ -1,9 +1,9 @@
-export type UserRol = "Insurance" | "SafeProducer";
+export type UserType = "insurance" | "producer";
 
 export interface Credential {
   id: string;
   email: string;
   password: string;
-  rol: UserRol;
+  type: UserType;
   reference_id: string; 
 }

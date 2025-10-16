@@ -5,8 +5,14 @@ export const authorizeRole = (roles: string[]) => {
     const user = (req as any).user;
     if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-    if (!roles.includes(user.type))
-      return res.status(403).json({ message: "Access denied: insufficient permissions" });
+    const userType = user.type?.toLowerCase();
+    const allowedRoles = roles.map(r => r.toLowerCase());
+
+    if (!allowedRoles.includes(userType)) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: insufficient permissions" });
+    }
 
     next();
   };

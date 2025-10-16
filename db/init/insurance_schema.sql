@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS insurance_db.credentials (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email CITEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
-  type VARCHAR(20) NOT NULL CHECK (type IN ('insurer' , 'producer')),
+  type VARCHAR(20) NOT NULL CHECK (type IN ('insurance' , 'producer')),
   reference_id UUID NOT NULL
 );
 
