@@ -54,7 +54,8 @@ frontend/node_modules/
 frontend/build/
 frontend/dist/
 frontend/.DS_Store
-=======
+
+
 # Logs
 logs
 *.log

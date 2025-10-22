@@ -24,11 +24,11 @@ services:
       - siad_net
 
 # Contenedor Backend
-  api:
+  backend:
     build:
-      context: ./api
+      context: ./backend
       dockerfile: Dockerfile.api
-    container_name: insurance_api
+    container_name: insurance_backend
     restart: unless-stopped
     env_file: .env
     environment:
@@ -43,7 +43,7 @@ services:
         condition: service_healthy
     command: npm run dev:docker
     volumes:
-      - ./api:/app
+      - ./backend:/app
       - /app/node_modules
     networks:
       - siad_net
@@ -62,7 +62,7 @@ services:
       - NODE_ENV=development
       - VITE_API_URL=http://localhost:3000 
     depends_on:
-      api:
+      backend:
         condition: service_started
     volumes:
       - ./frontend:/app

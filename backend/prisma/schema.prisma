@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String  @id @default(uuid())
+  email     String  @unique
+  password  String
+  type      String  // 'insurance' | 'producer'
+}
+
+model Insurance {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  insureds    Insured[]
+  sinisters   Sinister[]
+}
+
+model Producer{
+  id        String  @id @default(uuid())
+  name      String  
+  number    String  
+  dni       String  @unique
+  phone     String?
+  email     String?
+}
+
+model Insured {
+  id        String   @id @default(uuid())
+  name      String
+  surname   String
+  dni       String  @unique
+  email     String?
+  insurance Insurance? @relation(fields: [insuranceId], references: [id])
+  insuranceId String?
+  sinisters Sinister[]
+}
+
+model Sinister {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  description String
+  amount      Decimal
+  insurance   Insurance? @relation(fields: [insuranceId], references: [id])
+  insuranceId String?
+  insured     Insured? @relation(fields: [insuredId], references: [id])
+  insuredId   String?
+}
