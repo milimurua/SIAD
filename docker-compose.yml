@@ -11,10 +11,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"        
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -22,6 +21,7 @@ services:
       retries: 15
     networks:
       - siad_net
+
 
 # Contenedor Backend
   backend:
@@ -35,13 +35,16 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - JWT_EXPIRES=${JWT_EXPIRES}
+      - JWT_REFRESH_EXPIRES_IN=${JWT_REFRESH_EXPIRES_IN}
       - BCRYPT_SALT_ROUNDS=${BCRYPT_SALT_ROUNDS}
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
-    command: npm run dev:docker
+    command: sh -c "npx prisma migrate deploy && npm run dev:docker"
     volumes:
       - ./backend:/app
       - /app/node_modules
