@@ -29,7 +29,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, UserPermissions> = {
     canReadInsured: true,
     canUpdateInsured: false,
     canDeleteInsured: false,
-    canCreateSinister: true,
+    canCreateSinister: false,
     canReadSinister: true,
     canUpdateSinister: false,
     canDeleteSinister: false,

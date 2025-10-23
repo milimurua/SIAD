@@ -1,4 +1,4 @@
-import { SinisterRepository } from "../../infrastructure/db/InsuredRepository";
+import { SinisterRepository } from "../../infrastructure/db/SinisterRepository";
 
 export class GetSinistersByInsuredDni {
   private repository: SinisterRepository;

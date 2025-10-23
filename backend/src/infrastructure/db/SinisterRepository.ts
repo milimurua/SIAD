@@ -1,5 +1,5 @@
 import { prisma } from "./PrismaService";
-import { SinisterData } from "../../domain/types/shared";
+import { SinisterData } from "../../domain/shared";
 
 export class SinisterRepository {
   async create(data: SinisterData) {

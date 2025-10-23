@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { UserRole, ROLE_PERMISSIONS } from "../../domain/types/roles";
+import { UserRole, ROLE_PERMISSIONS } from "../../domain/roles";
 
-// Exportar ROLE_PERMISSIONS para uso en otros archivos
+// Exportar ROLE_PERMISSIONS 
 export { ROLE_PERMISSIONS };
 
 // Middleware para verificar roles específicos
@@ -48,7 +48,7 @@ export const requirePermission = (permission: keyof typeof ROLE_PERMISSIONS.insu
   };
 };
 
-// Middleware para verificar múltiples permisos (todos deben ser verdaderos)
+// Middleware para verificar múltiples permisos
 export const requireAllPermissions = (...permissions: (keyof typeof ROLE_PERMISSIONS.insurance)[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {

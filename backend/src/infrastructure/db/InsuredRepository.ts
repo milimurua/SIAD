@@ -1,5 +1,5 @@
 import { prisma } from "./PrismaService";
-import { InsuredData } from "../../domain/types/shared";
+import { InsuredData } from "../../domain/shared";
 
 export class InsuredRepository {
   async create(data: InsuredData) {
@@ -58,12 +58,6 @@ export class InsuredRepository {
     });
     
     return updatedInsured;
-  }
-
-  async delete(id: string) {
-    await prisma.insured.delete({
-      where: { id }
-    });
   }
 
   async findByInsuranceId(insuranceId: string) {

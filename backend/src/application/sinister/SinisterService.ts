@@ -1,10 +1,10 @@
-import { ISinisterRepository } from "../../domain/repositories/ISinisterRepository";
-import { Sinister } from "../../domain/entities/Sinister";
+import { SinisterRepository } from "../../infrastructure/db/SinisterRepository";
+import { SinisterData } from "../../domain/shared";
 
 export class SinisterService {
-  constructor(private readonly sinisterRepo: ISinisterRepository) {}
+  constructor(private readonly sinisterRepo: SinisterRepository) {}
 
-  async createSinister(data: Sinister, user: any) {
+  async createSinister(data: SinisterData, user: any) {
     if (user.type !== "insurance")
       throw new Error("Only 'Insurance' users can create sinisters");
 
@@ -15,16 +15,14 @@ export class SinisterService {
 
     const newSinister = await this.sinisterRepo.create({
       ...data,
-      insurance_id: insuranceId,
+      insuranceId,
     });
 
     return newSinister;
   }
 
-  async getAllByInsurance(user: any) {
-    if (user.type !== "insurance")
-      throw new Error("Access denied: only Insurances can view their sinisters");
-
-    return await this.sinisterRepo.findAllByInsurance(user.id);
+  async getAllByInsurance(insuredId: any) {
+    if (!insuredId) throw new Error("Missing insured ID");
+    return await this.sinisterRepo.findByInsuredId(insuredId);
   }
 }

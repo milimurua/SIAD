@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../../infrastructure/security/jwt";
-import { JWTPayload } from "../../domain/types/roles";
+import { JWTPayload } from "../../domain/roles";
 
 // Extender la interfaz Request para incluir el usuario
 declare global {

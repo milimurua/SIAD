@@ -3,7 +3,7 @@ import { InsuranceRepository } from "../../infrastructure/db/InsuranceRepository
 import { ProducerRepository } from "../../infrastructure/db/ProducerRepository";
 import { hashPassword, comparePassword } from "../../infrastructure/security/password";
 import { generateToken } from "../../infrastructure/security/jwt";
-import { User } from "../../domain/entities/User";
+import { UserData } from "../../domain/shared";
 import { v4 as uuidv4 } from 'uuid';
 
 export class AuthService {
@@ -29,7 +29,7 @@ export class AuthService {
 
         const hashed = await hashPassword(password);
 
-        const user: User = {
+        const user: UserData = {
             id: uuidv4(),
             email,
             password: hashed,

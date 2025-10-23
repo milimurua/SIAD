@@ -14,6 +14,14 @@ export interface SinisterData {
   insuredId?: string;
 }
 
+export interface InsuranceData{
+  id: string;
+  name: String;
+  email: String
+  insureds: InsuredData[];
+  sinisters: SinisterData[];
+}
+
 export interface ProducerData {
   name: string;
   number: string;

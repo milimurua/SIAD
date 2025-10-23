@@ -79,24 +79,6 @@ export const updateSinister = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteSinister = async (req: Request, res: Response) => {
-  try {
-    if (!PermissionChecker.hasPermission(req, "canDeleteSinister")) {
-      return res.status(403).json({ 
-        error: "Insufficient permissions",
-        message: "No tiene permisos para eliminar siniestros"
-      });
-    }
-
-    const { id } = req.params;
-    await sinisterRepo.delete(id);
-    res.status(204).send();
-  } catch (error: any) {
-    console.error("Error deleting sinister:", error);
-    res.status(400).json({ message: error.message });
-  }
-};
-
 export const getSinisterStatistics = async (req: Request, res: Response) => {
   try {
     if (!PermissionChecker.hasPermission(req, "canReadSinister")) {

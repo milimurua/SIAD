@@ -81,24 +81,6 @@ export const updateInsured = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteInsured = async (req: Request, res: Response) => {
-  try {
-    if (!PermissionChecker.hasPermission(req, "canDeleteInsured")) {
-      return res.status(403).json({ 
-        error: "Insufficient permissions",
-        message: "No tiene permisos para eliminar asegurados"
-      });
-    }
-
-    const { id } = req.params;
-    await insuredRepo.delete(id);
-    res.status(204).send();
-  } catch (error: any) {
-    console.error("Error deleting insured:", error);
-    res.status(400).json({ message: error.message });
-  }
-};
-
 export const getSinistersByInsuredDni = async (req: Request, res: Response) => {
   try {
     if (!PermissionChecker.hasPermission(req, "canReadSinister")) {

@@ -8,14 +8,13 @@ import { errorHandler } from "./interface/middlewares/error.middleware";
 
 const app = express();
 
-// --- Middleware base ---
 app.use(cors());
 app.use(express.json());
 
-// --- Rutas API ---
+// Rutas
 app.use("/api", routes);
 
-// --- Servir el frontend (React, Vue, etc.) ---
+// Frontend
 const frontendPath = path.join(__dirname, "../../frontend/dist");
 app.use(express.static(frontendPath));
 
@@ -24,7 +23,6 @@ app.get("*", (_req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-// --- Middleware global de errores ---
 app.use(errorHandler);
 
 export default app;

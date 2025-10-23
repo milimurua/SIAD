@@ -1,19 +1,15 @@
-import { IUserRepository } from "../../domain/repositories/IUserRepository";
-import { User } from "../../domain/entities/User";
-import { UserData } from "../../domain/types/shared";
+import { UserData } from "../../domain/shared";
 import { prisma } from "./PrismaService";
 
-export class UserRepository implements IUserRepository {
-  async findByEmail(email: string): Promise<User | null> {
-    const user = await (prisma as any).user.findUnique({
-      where: { email }
-    });
-    
+export class UserRepository{
+  async findByEmail(email: string): Promise<UserData | null> {
+    const user = await prisma.user.findUnique({ where: { email } });
+  
     return user;
   }
 
-  async create(user: UserData): Promise<User> {
-    const createdUser = await (prisma as any).user.create({
+  async create(user: UserData): Promise<UserData> {
+    const createdUser = await prisma.user.create({
       data: {
         id: user.id,
         email: user.email,
@@ -25,16 +21,16 @@ export class UserRepository implements IUserRepository {
     return createdUser;
   }
 
-  async findById(id: string): Promise<User | null> {
-    const user = await (prisma as any).user.findUnique({
+  async findById(id: string): Promise<UserData | null> {
+    const user = await prisma.user.findUnique({
       where: { id }
     });
     
     return user;
   }
 
-  async update(id: string, data: Partial<User>): Promise<User> {
-    const updatedUser = await (prisma as any).user.update({
+  async update(id: string, data: Partial<UserData>): Promise<UserData> {
+    const updatedUser = await prisma.user.update({
       where: { id },
       data
     });
@@ -43,21 +39,20 @@ export class UserRepository implements IUserRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await (prisma as any).user.delete({
+    await prisma.user.delete({
       where: { id }
     });
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await (prisma as any).user.findMany({
+  async findAll(): Promise<UserData[]> {
+    const users = await prisma.user.findMany({
       select: {
         id: true,
         email: true,
         type: true,
-        // No incluir password por seguridad
       }
     });
     
-    return users as User[];
+    return users as UserData[];
   }
 }

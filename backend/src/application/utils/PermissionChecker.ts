@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { ROLE_PERMISSIONS, UserRole } from "../../domain/types/roles";
+import { ROLE_PERMISSIONS, UserRole } from "../../domain/roles";
 
 export class PermissionChecker {
   static hasPermission(req: Request, permission: keyof typeof ROLE_PERMISSIONS.insurance): boolean {

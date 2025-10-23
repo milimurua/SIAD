@@ -5,50 +5,70 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["insurance"] 
 }
 
 model User {
-  id        String  @id @default(uuid())
-  email     String  @unique
-  password  String
-  type      String  // 'insurance' | 'producer'
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  type     String
+
+  @@map("user")
+  @@schema("insurance")
 }
 
 model Insurance {
-  id          String   @id @default(uuid())
-  name        String
-  email       String?
-  insureds    Insured[]
-  sinisters   Sinister[]
+  id    String @id @default(uuid())
+  name  String
+  email String?
+
+  insureds  Insured[]
+  sinisters Sinister[]
+
+  @@map("insurance")
+  @@schema("insurance")
 }
 
-model Producer{
-  id        String  @id @default(uuid())
-  name      String  
-  number    String  
-  dni       String  @unique
-  phone     String?
-  email     String?
+model Producer {
+  id     String @id @default(uuid())
+  name   String
+  number String
+  dni    String @unique
+  phone  String?
+  email  String?
+
+  @@map("producer")
+  @@schema("insurance")
 }
 
 model Insured {
-  id        String   @id @default(uuid())
-  name      String
-  surname   String
-  dni       String  @unique
-  email     String?
-  insurance Insurance? @relation(fields: [insuranceId], references: [id])
+  id          String  @id @default(uuid())
+  name        String
+  surname     String
+  dni         String  @unique
+  email       String?
+  insurance   Insurance? @relation(fields: [insuranceId], references: [id])
   insuranceId String?
+
   sinisters Sinister[]
+
+  @@map("insured")
+  @@schema("insurance")
 }
 
 model Sinister {
   id          String   @id @default(uuid())
   date        DateTime @default(now())
   description String
-  amount      Decimal
+  amount      Decimal  @db.Decimal(65, 30)
+
   insurance   Insurance? @relation(fields: [insuranceId], references: [id])
   insuranceId String?
-  insured     Insured? @relation(fields: [insuredId], references: [id])
+
+  insured     Insured?   @relation(fields: [insuredId], references: [id])
   insuredId   String?
+
+  @@map("sinister")
+  @@schema("insurance")
 }

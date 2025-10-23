@@ -10,8 +10,8 @@ async function startServer() {
     
     // Iniciar servidor
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📊 Database connected successfully`);
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Database connected successfully`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
@@ -19,15 +19,9 @@ async function startServer() {
   }
 }
 
-// Manejo de cierre graceful
+// Cierre del server
 process.on('SIGINT', async () => {
-  console.log('\n Shutting down server...');
-  await prismaService.disconnect();
-  process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-  console.log('\n Shutting down server...');
+  console.log('\n Shutting down server');
   await prismaService.disconnect();
   process.exit(0);
 });

@@ -1,11 +1,9 @@
-import { IProducerRepository } from "../../domain/repositories/IProducerRepository";
-import { Producer } from "../../domain/entities/Producer";
-import { ProducerData } from "../../domain/types/shared";
+import { ProducerData } from "../../domain/shared";
 import { prisma } from "./PrismaService";
 
-export class ProducerRepository implements IProducerRepository {
-  async create(data: ProducerData): Promise<Producer> {
-    const producer = await (prisma as any).producer.create({
+export class ProducerRepository {
+  async create(data: ProducerData): Promise<ProducerData> {
+    const producer = await prisma.producer.create({
       data: {
         name: data.name,
         number: data.number,
@@ -18,22 +16,22 @@ export class ProducerRepository implements IProducerRepository {
     return producer;
   }
 
-  async findById(id: string): Promise<Producer | null> {
-    const producer = await (prisma as any).producer.findUnique({
+  async findById(id: string): Promise<ProducerData | null> {
+    const producer = await prisma.producer.findUnique({
       where: { id }
     });
     
     return producer;
   }
 
-  async findAll(): Promise<Producer[]> {
-    const producers = await (prisma as any).producer.findMany();
+  async findAll(): Promise<ProducerData[]> {
+    const producers = await prisma.producer.findMany();
     
     return producers;
   }
 
-  async update(id: string, data: Partial<Producer>): Promise<Producer> {
-    const updatedProducer = await (prisma as any).producer.update({
+  async update(id: string, data: Partial<ProducerData>): Promise<ProducerData> {
+    const updatedProducer = await prisma.producer.update({
       where: { id },
       data
     });
@@ -41,22 +39,16 @@ export class ProducerRepository implements IProducerRepository {
     return updatedProducer;
   }
 
-  async delete(id: string): Promise<void> {
-    await (prisma as any).producer.delete({
-      where: { id }
-    });
-  }
-
-  async findByDni(dni: string): Promise<Producer | null> {
-    const producer = await (prisma as any).producer.findUnique({
+  async findByDni(dni: string): Promise<ProducerData | null> {
+    const producer = await prisma.producer.findUnique({
       where: { dni }
     });
     
     return producer;
   }
 
-  async findByEmail(email: string): Promise<Producer | null> {
-    const producer = await (prisma as any).producer.findFirst({
+  async findByEmail(email: string): Promise<ProducerData | null> {
+    const producer = await prisma.producer.findFirst({
       where: { email }
     });
     

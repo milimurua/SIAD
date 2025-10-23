@@ -1,51 +1,41 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 class PrismaService {
-  private static instance: PrismaService;
-  private prisma: PrismaClient;
+  private static instance: PrismaClient;
 
-  private constructor() {
-    this.prisma = new PrismaClient({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
-    });
+  constructor() {
+    if (!PrismaService.instance) {
+      PrismaService.instance = new PrismaClient({
+        // Configuración explícita del esquema predeterminado
+        datasources: {
+          db: {
+            url: process.env.DATABASE_URL || 
+              ""
+          },
+        },
+        log: ["query", "info", "warn", "error"], //depurar querys
+      });
+    }
   }
 
-  public static getInstance(): PrismaService {
-    if (!PrismaService.instance) {
-      PrismaService.instance = new PrismaService();
-    }
+  get client(): PrismaClient {
     return PrismaService.instance;
   }
 
-  public getClient(): PrismaClient {
-    return this.prisma;
-  }
-
-  public async connect(): Promise<void> {
+  async connect(): Promise<void> {
     try {
-      await this.prisma.$connect();
-      console.log('Database connected via Prisma');
+      await PrismaService.instance.$connect();
+      console.log("Connected to database (schema: insurance)");
     } catch (error) {
-      console.error('Database connection error:', error);
+      console.error("Failed to connect to database:", error);
       throw error;
     }
   }
 
-  public async disconnect(): Promise<void> {
-    await this.prisma.$disconnect();
-    console.log('Database disconnected');
-  }
-
-  public async healthCheck(): Promise<boolean> {
-    try {
-      await this.prisma.$queryRaw`SELECT 1`;
-      return true;
-    } catch (error) {
-      console.error('Health check failed:', error);
-      return false;
-    }
+  async disconnect(): Promise<void> {
+    await PrismaService.instance.$disconnect();
   }
 }
 
-export const prismaService = PrismaService.getInstance();
-export const prisma = prismaService.getClient();
+export const prismaService = new PrismaService();
+export const prisma = prismaService.client;
