@@ -64,7 +64,7 @@ export default {
         console.log("Usuario autenticado:", data);
 
         // Redirigir después de iniciar sesión
-        this.$router.push("/form-denuncia");
+        this.$router.push("/Sinister");
       } catch (err) {
         console.error("Error al iniciar sesión:", err);
         this.errorMessage = err.message || "Error al conectar con el servidor.";
