@@ -5,67 +5,101 @@
       
       <div class="form-group">
         <label for="dni">DNI del Asegurado:</label>
-        <input id="dni" v-model="denuncia.insured_dni" type="text" required />
+        <input id="dni" v-model="SinisterData.dni" type="text" required />
       </div>
 
       <div class="form-group">
         <label for="tipo">Tipo de Siniestro:</label>
-        <input id="tipo" v-model="denuncia.tipo_siniestro" type="text" required />
+        <input id="tipo" v-model="SinisterData.description" type="text" required />
       </div>
 
       <div class="form-group">
         <label for="fecha">Fecha del Siniestro:</label>
-        <input id="fecha" v-model="denuncia.date_sinister" type="date" required />
+        <input id="fecha" v-model="SinisterData.date_sinister" type="date" required />
       </div>
 
       <div class="form-group">
         <label for="monto">Monto Estimado (USD):</label>
-        <input id="monto" v-model.number="denuncia.amount_sinister" type="number" required />
-      </div>
-      
-      <div class="form-group">
-        <label for="descripcion">Descripción del Siniestro:</label>
-        <textarea id="descripcion" v-model="denuncia.description_sinister" required></textarea>
+        <input id="monto" v-model.number="SinisterData.amount" type="number" required />
       </div>
 
-      
-        <router-link to="/sinister" class="button">Registrar siniestro</router-link>
-      
+      <button type="submit" class="button">Registrar siniestro</button>
     </form>
+
     <div v-if="mensaje" class="success">{{ mensaje }}</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
 </template>
 
 <script>
 export default {
+  name: "SinisterForm",
   data() {
     return {
-      // Nuevos campos inicializados
-      denuncia: { 
-        insured_dni: '', // DNI
-        tipo_siniestro: '', 
-        description_sinister: '', 
-        date_sinister: '',
-        amount_sinister: null, // null es mejor para números
-        // stay_sinister: false (Este campo generalmente se gestiona en el backend)
+      SinisterData: {
+        dni: "",
+        description: "",
+        date_sinister: "",
+        amount: "",
       },
-      mensaje: ''
+      mensaje: "",
+      errorMessage: "",
     };
   },
   methods: {
-    enviarDenuncia() {
-      // Por ahora solo muestra los datos en consola.
-      // Aquí es donde luego harás la llamada HTTP al backend (axios.post('/api/sinister', this.denuncia))
-      
-      console.log('Datos de la Denuncia listos para enviar al Backend:', this.denuncia);
-      this.mensaje = 'Denuncia enviada correctamente. (Simulación)';
+    async enviarDenuncia() {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const token = localStorage.getItem("token");
 
-      // Opcional: Limpiar el formulario
-      // this.denuncia = { insured_dni: '', tipo_siniestro: '', description_sinister: '', date_sinister: '', amount_sinister: null };
-    }
-  }
+      try {
+        // 1️⃣ Buscar el asegurado por DNI
+        const resInsured = await fetch(`${API_URL}/api/insured/dni/${this.SinisterData.dni}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!resInsured.ok) {
+          throw new Error("No se encontró ningún asegurado con ese DNI");
+        }
+
+        const insuredData = await resInsured.json();
+        const insuredId = insuredData.id; // ID interno del asegurado
+
+        // 2️⃣ Crear el siniestro usando el ID encontrado
+        const resSinister = await fetch(`${API_URL}/api/sinister`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            description: this.SinisterData.description,
+            amount: this.SinisterData.amount,
+            date_sinister: this.SinisterData.date_sinister,
+            insuredId: insuredId, // 👈 usamos el ID, no el DNI
+          }),
+        });
+
+        const data = await resSinister.json();
+
+        if (!resSinister.ok) {
+          throw new Error(data.message || "Error al registrar el siniestro");
+        }
+
+        this.mensaje = "✅ Siniestro registrado correctamente";
+        this.errorMessage = "";
+
+        console.log("Siniestro creado:", data);
+        this.$router.push("/sinister");
+
+      } catch (err) {
+        console.error("Error al registrar el siniestro:", err);
+        this.errorMessage = err.message || "Error al conectar con el servidor.";
+      }
+    },
+  },
 };
 </script>
+
 
 <style scoped>
 /* Estilos originales mantenidos y ligeramente ajustados */

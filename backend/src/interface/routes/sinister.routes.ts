@@ -11,6 +11,7 @@ router.post("/", SinisterController.createSinister);
 router.get("/", SinisterController.getSinisters);
 router.get("/statistics", SinisterController.getSinisterStatistics);
 router.get("/:id", SinisterController.getSinisterById);
+router.get("/by-dni/:dni", SinisterController.getSinistersByDni);
 router.put("/:id", SinisterController.updateSinister);
 
 export default router;

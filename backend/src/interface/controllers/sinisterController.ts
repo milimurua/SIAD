@@ -94,4 +94,31 @@ export const getSinisterStatistics = async (req: Request, res: Response) => {
     console.error("Error getting statistics:", error);
     res.status(500).json({ message: error.message });
   }
+  
+};
+export const getSinistersByDni = async (req: Request, res: Response) => {
+  try {
+    if (!PermissionChecker.hasPermission(req, "canReadSinister")) {
+      return res.status(403).json({ 
+        error: "Insufficient permissions",
+        message: "No tiene permisos para leer siniestros"
+      });
+    }
+
+    const { dni } = req.params;
+    if (!dni) {
+      return res.status(400).json({ message: "DNI es requerido" });
+    }
+
+    const sinisters = await sinisterRepo.findByInsuredDni(dni);
+    
+    res.json({
+      dni,
+      total: sinisters.length,
+      sinisters
+    });
+  } catch (error: any) {
+    console.error("Error getting sinisters by DNI:", error);
+    res.status(500).json({ message: error.message });
+  }
 };

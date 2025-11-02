@@ -1,3 +1,4 @@
+
 import { UserRepository } from "../../infrastructure/db/UserRepository";
 import { InsuranceRepository } from "../../infrastructure/db/InsuranceRepository";
 import { ProducerRepository } from "../../infrastructure/db/ProducerRepository";
@@ -37,9 +38,9 @@ export class AuthService {
         };
 
         const created = await this.userRepo.create(user);
-        const token = generateToken({ id: created.id, email, type });
-
-        return { token, userType: type, reference };
+        const { accessToken } = generateToken({ id: created.id, email, type });
+        
+        return { token: accessToken, userType: type, reference };
     }
 
     // Login genérico
@@ -50,7 +51,9 @@ export class AuthService {
         const valid = await comparePassword(password, cred.password);
         if (!valid) throw new Error("Invalid credentials");
 
-        const token = generateToken({ id: cred.id, email: cred.email, type: cred.type });
-        return { token, type: cred.type };
+
+        
+        const { accessToken } = generateToken({ id: cred.id, email: cred.email, type: cred.type });
+        return { token: accessToken, type: cred.type };
     }
 }

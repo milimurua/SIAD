@@ -28,11 +28,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="s in sinisters" :key="s.insured_dni">
-                    <td>{{ s.id_sinister }}</td>
-                    <td>{{ s.insured_dni }}</td>
-                    <td>{{ s.description_sinister }}</td>
-                    <td>{{ s.amount_sinister }}</td>
+                <tr v-for="s in sinisters" :key="s.id">
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.insured?.dni || 'N/A' }}</td>
+                    <td>{{ s.description }}</td>
+                    <td>{{ s.amount }}</td>
                 </tr>
             </tbody>
         </table>
@@ -57,26 +57,43 @@ export default {
         async buscarSiniestros() {
             try {
                 // 1. Verificación y Obtención del Token
-                const token = localStorage.getItem("token"); // [cite: 54]
-                if (!token) throw new Error("No hay token"); // [cite: 55]
+                const token = localStorage.getItem("token");
+                if (!token) throw new Error("No hay token");
 
+                const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+                
                 // 2. Petición al Backend
-                const res = await fetch("http://localhost:3000/api/sinister", { // [cite: 56]
-                    headers: { Authorization: `Bearer ${token}` } // Envía el token para seguridad [cite: 56]
+                let url = `${API_URL}/api/sinister`;
+                
+                // Si hay un término de búsqueda, buscar por DNI del asegurado
+                if (this.searchTerm && this.searchTerm.trim()) {
+                    // Usar el endpoint específico para buscar por DNI
+                    url = `${API_URL}/api/sinister/by-dni/${this.searchTerm.trim()}`;
+                }
+
+                const res = await fetch(url, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
 
-                if (!res.ok) throw new Error("Error al buscar siniestros"); // [cite: 58]
-                const data = await res.json(); // La respuesta del backend debe ser un array de siniestros
-
-                // 3. Filtrado Local y Asignación
-                // NOTA: Se asume que el backend devuelve TODOS los siniestros.
-                // El filtrado se hace en el frontend por el DNI del asegurado [cite: 60, 62]
-                this.sinisters = data.filter(s =>
-                    s.insured_dni.includes(this.searchTerm)
-                );
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({}));
+                    throw new Error(errorData.message || "Error al buscar siniestros");
+                }
+                
+                const data = await res.json();
+                
+                // 3. Manejar la respuesta según el endpoint usado
+                if (this.searchTerm && this.searchTerm.trim()) {
+                    // El endpoint de búsqueda por DNI devuelve { dni, total, sinisters }
+                    this.sinisters = data.sinisters || [];
+                } else {
+                    // El endpoint general devuelve un array directo
+                    this.sinisters = data;
+                }
             } catch (err) {
-                console.error(err); // [cite: 65]
-                alert("No se pudieron cargar los siniestros"); // [cite: 66]
+                console.error("Error al buscar siniestros:", err);
+                alert(`No se pudieron cargar los siniestros: ${err.message || 'Error desconocido'}`);
+                this.sinisters = [];
             }
         },
         

@@ -13,6 +13,6 @@ router.get("/:id", InsuredController.getInsuredById);
 router.put("/:id", InsuredController.updateInsured);
 
 // Ruta especial para obtener asegurados por DNI
-router.get("/insured/:dni", InsuredController.getSinistersByInsuredDni);
+router.get("/insured/insured/:dni", InsuredController.getSinistersByInsuredDni);
 
 export default router;
