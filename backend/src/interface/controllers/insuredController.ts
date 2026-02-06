@@ -103,3 +103,29 @@ export const getSinistersByInsuredDni = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const getInsuredByDni = async (req: Request, res: Response) => {
+  try {
+    if (!PermissionChecker.hasPermission(req, "canReadInsured")) {
+      return res.status(403).json({ 
+        error: "Insufficient permissions",
+        message: "No tiene permisos para leer asegurados"
+      });
+    }
+
+    const { dni } = req.params;
+    if (!dni) {
+      return res.status(400).json({ message: "DNI es requerido" });
+    }
+
+    const insured = await insuredRepo.findByDni(dni);
+    
+    if (!insured) {
+      return res.status(404).json({ message: "No se encontró ningún asegurado con ese DNI" });
+    }
+
+    res.json(insured);
+  } catch (error: any) {
+    console.error("Error getting insured by DNI:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
